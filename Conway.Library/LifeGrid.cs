@@ -8,16 +8,22 @@ namespace Conway.Library
         public CellState[,] CurrentState;
         private CellState[,] nextState;
 
+        public int GridHeight { get; set; }
+        public int GridWidth { get; set; }
+
+
         /// <summary>
         /// Default Constructor
         /// </summary>
-        public LifeGrid()
+        public LifeGrid(int GridHeight, int GridWidth)
         {
-            CurrentState = new CellState[5, 5];
-            nextState = new CellState[5, 5];
+            this.GridWidth = GridWidth;
+            this.GridHeight = GridHeight;
+            CurrentState = new CellState[GridHeight, GridWidth];
+            nextState = new CellState[GridHeight, GridWidth];
 
-            for (int row = 0; row < 5; row++)
-                for (int col = 0; col < 5; col++)
+            for (int row = 0; row < GridHeight; row++)
+                for (int col = 0; col < GridWidth; col++)
                 {
                     CurrentState[row, col] = CellState.Dead;
                 }
@@ -28,15 +34,15 @@ namespace Conway.Library
         /// </summary>
         public void UpdateState()
         {
-            for (int row = 0; row < 5; row++)
-                for (int col = 0; col < 5; col++)
+            for (int row = 0; row < GridHeight; row++)
+                for (int col = 0; col < GridWidth; col++)
                 {
                     var liveNeighbours = GetLiveNeighbours(row, col);
                     nextState[row, col] = LifeRules.GetNewState(CurrentState[row, col], liveNeighbours);
                 }
 
             CurrentState = nextState;
-            nextState = new CellState[5, 5];
+            nextState = new CellState[GridHeight, GridWidth];
         }
 
         /// <summary>
@@ -60,8 +66,8 @@ namespace Conway.Library
                     int neighborX = posX + row;
                     int neighborY = posY + col;
                     // exclude positions outside of LifeGrid
-                    if (neighborX < 0 || neighborX >= 5
-                    ||  neighborY < 0 || neighborY >= 5)
+                    if (neighborX < 0 || neighborX >= GridWidth
+                    ||  neighborY < 0 || neighborY >= GridHeight)
                         continue;
                     // if neighbor is alive increment liveNeibours
                     if (CurrentState[neighborX, neighborY] == CellState.Alive)

@@ -51,12 +51,60 @@ namespace Conway.ConsoleUI
         static void InitGame()
         {
             // Generate the grid
-            MyGrid = new LifeGrid(20, 20);
+            MyGrid = new LifeGrid(60, 80);
 
             // Set the Alive cells (Cells are Dead by default)
-            MyGrid.CurrentState[1, 2] = CellState.Alive;
-            MyGrid.CurrentState[2, 2] = CellState.Alive;
-            MyGrid.CurrentState[3, 2] = CellState.Alive;
+            InitGosperglidergun();
+            //MyGrid.CurrentState[1, 2] = CellState.Alive;
+            //MyGrid.CurrentState[2, 2] = CellState.Alive;
+            //MyGrid.CurrentState[3, 2] = CellState.Alive;
+        }
+
+        /// <summary>
+        /// Draws A Gosper Glider Gun on the grid
+        /// </summary>
+        static void InitGosperglidergun()
+        {
+            // first square
+            MyGrid.CurrentState[15, 11] = CellState.Alive;
+            MyGrid.CurrentState[16, 11] = CellState.Alive;
+            MyGrid.CurrentState[15, 12] = CellState.Alive;
+            MyGrid.CurrentState[16, 12] = CellState.Alive;
+            // Circle
+            MyGrid.CurrentState[15, 21] = CellState.Alive;
+            MyGrid.CurrentState[16, 21] = CellState.Alive;
+            MyGrid.CurrentState[17, 21] = CellState.Alive;
+            MyGrid.CurrentState[14, 22] = CellState.Alive;
+            MyGrid.CurrentState[18, 22] = CellState.Alive;
+            MyGrid.CurrentState[13, 23] = CellState.Alive;
+            MyGrid.CurrentState[19, 23] = CellState.Alive;
+            MyGrid.CurrentState[13, 24] = CellState.Alive;
+            MyGrid.CurrentState[19, 24] = CellState.Alive;
+            MyGrid.CurrentState[16, 25] = CellState.Alive;
+            MyGrid.CurrentState[14, 26] = CellState.Alive;
+            MyGrid.CurrentState[18, 26] = CellState.Alive;
+            MyGrid.CurrentState[15, 27] = CellState.Alive;
+            MyGrid.CurrentState[16, 27] = CellState.Alive;
+            MyGrid.CurrentState[17, 27] = CellState.Alive;
+            MyGrid.CurrentState[16, 28] = CellState.Alive;
+            // Triangle
+            MyGrid.CurrentState[13, 31] = CellState.Alive;
+            MyGrid.CurrentState[14, 31] = CellState.Alive;
+            MyGrid.CurrentState[15, 31] = CellState.Alive;
+            MyGrid.CurrentState[13, 32] = CellState.Alive;
+            MyGrid.CurrentState[14, 32] = CellState.Alive;
+            MyGrid.CurrentState[15, 32] = CellState.Alive;
+            MyGrid.CurrentState[12, 33] = CellState.Alive;
+            MyGrid.CurrentState[16, 33] = CellState.Alive;
+            MyGrid.CurrentState[11, 35] = CellState.Alive;
+            MyGrid.CurrentState[12, 35] = CellState.Alive;
+            MyGrid.CurrentState[16, 35] = CellState.Alive;
+            MyGrid.CurrentState[17, 35] = CellState.Alive;
+            // last square
+            MyGrid.CurrentState[13, 45] = CellState.Alive;
+            MyGrid.CurrentState[14, 45] = CellState.Alive;
+            MyGrid.CurrentState[13, 46] = CellState.Alive;
+            MyGrid.CurrentState[14, 46] = CellState.Alive;
         }
 
         /// <summary>
@@ -71,18 +119,17 @@ namespace Conway.ConsoleUI
             Console.Clear();
             int x = 0;
             int rowLength = MyGrid.GridWidth;
-
+            string output = "";
             foreach (var state in currentState)
             {
-                var output = state == CellState.Alive ? "0" : ".";
-                Console.Write(output);
-                x++;
-                if (x >= rowLength)
+                output += state == CellState.Alive ? "#" : " ";
+                if (++x >= rowLength)
                 {
                     x = 0;
-                    Console.WriteLine();
+                    output += '\n';
                 }
             }
+            Console.WriteLine(output);
         }
 
         #endregion

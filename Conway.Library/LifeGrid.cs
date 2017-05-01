@@ -5,54 +5,94 @@ namespace Conway.Library
 {
     public class LifeGrid
     {
-        public CellState[,] CurrentState;
-        private CellState[,] nextState;
-
-        public int GridHeight { get; set; }
-        public int GridWidth { get; set; }
-
+        #region Members
 
         /// <summary>
-        /// Default Constructor
+        /// Simplified mechanic for the moment.
+        /// Gets the next state after updating state with <see cref="UpdateState"/>.
+        /// </summary>
+        public CellState[,] NextState;
+
+        /// <summary>
+        /// Current state of the game (i.e. the Grid).
+        /// Indicates the <see cref="CellState"/> of each <see cref="Cell"/>.
+        /// </summary>
+        public CellState[,] CurrentState;
+
+        #endregion
+
+        #region Public Properties
+
+        /// <summary>
+        /// The number of <see cref="Cell"/>s in a column of the <see cref="LifeGrid"/>.
+        /// </summary>
+        public int GridHeight { get; }
+
+        /// <summary>
+        /// The number of <see cref="Cell"/>s in a row of the <see cref="LifeGrid"/>.
+        /// </summary>
+        public int GridWidth { get; }
+
+        #endregion
+        
+        #region Constructor
+
+        /// <summary>
+        /// Default Constructor.
+        /// Creates a grid which dimesnsions are <see cref="GridHeight"/> and <see cref="GridWidth"/>.
+        /// Cells are Dead per default.
         /// </summary>
         public LifeGrid(int GridHeight, int GridWidth)
         {
+            // Dimensions
             this.GridWidth = GridWidth;
             this.GridHeight = GridHeight;
+            // Content
             CurrentState = new CellState[GridHeight, GridWidth];
-            nextState = new CellState[GridHeight, GridWidth];
-
+            NextState = new CellState[GridHeight, GridWidth];
+            // Default State is CellState.Dead
             for (int row = 0; row < GridHeight; row++)
                 for (int col = 0; col < GridWidth; col++)
                 {
                     CurrentState[row, col] = CellState.Dead;
+                    NextState[row, col] = CellState.Dead;
                 }
         }
+
+        #endregion
+
+        #region Public Methods
 
         /// <summary>
         /// Updates state of each cell on the game.
         /// </summary>
         public void UpdateState()
         {
+            // calculate results of life for each Cell of the LifeGrid (nextState)
             for (int row = 0; row < GridHeight; row++)
                 for (int col = 0; col < GridWidth; col++)
                 {
                     var liveNeighbours = GetLiveNeighbours(row, col);
-                    nextState[row, col] = LifeRules.GetNewState(CurrentState[row, col], liveNeighbours);
+                    NextState[row, col] = LifeRules.GetNewState(CurrentState[row, col], liveNeighbours);
                 }
-
-            CurrentState = nextState;
-            nextState = new CellState[GridHeight, GridWidth];
+            // Updates CurrentState
+            CurrentState = NextState;
+            // Reset nextState
+            NextState = new CellState[GridHeight, GridWidth];
         }
 
+        #endregion
+
+        #region Private Methods
+
         /// <summary>
-        /// Get the number of Alive neighbour to the reference cell.
+        /// Get the number of Alive neighbours to the reference cell.
         /// Exclude both reference cell and grid's outside positions.
         /// </summary>
-        /// <param name="posX">ref cell row position</param>
-        /// <param name="posY">ref cell col position</param>
+        /// <param name="posY">ref cell row position</param>
+        /// <param name="posX">ref cell col position</param>
         /// <returns></returns>
-        private int GetLiveNeighbours(int posX, int posY)
+        private int GetLiveNeighbours(int posY, int posX)
         {
             int liveNeighbours = 0;
             // for each cell in 3x3 square (direct neighbours)
@@ -63,41 +103,19 @@ namespace Conway.Library
                     if (row == 0 && col == 0)
                         continue;
                     // define neighbor position
-                    int neighborX = posX + row;
-                    int neighborY = posY + col;
+                    int neighborX = posX + col;
+                    int neighborY = posY + row;
                     // exclude positions outside of LifeGrid
                     if (neighborX < 0 || neighborX >= GridWidth
-                    ||  neighborY < 0 || neighborY >= GridHeight)
+                    || neighborY < 0 || neighborY >= GridHeight)
                         continue;
                     // if neighbor is alive increment liveNeibours
-                    if (CurrentState[neighborX, neighborY] == CellState.Alive)
+                    if (CurrentState[neighborY, neighborX] == CellState.Alive)
                         liveNeighbours++;
                 }
             return liveNeighbours;
         }
 
-        public enum HorizPos
-        {
-            Left = -1,
-            same = 0,
-            Right = 1
-        }
-
-        public enum VertiPos
-        {
-            Up = -1,
-            same = 0,
-            Down = 1
-        }
-
-        public class Cell
-        {
-            int PositionX;
-            int PositionY;
-        
-            // -1,-1  0,-1  1,-1
-            // -1, 0        1, 0
-            // -1, 1  0, 1  1, 1
-        }
+        #endregion
     }
 }

@@ -2,6 +2,8 @@
 
 namespace Conway.Library
 {
+    #region Enumerations
+
     /// <summary>
     /// Possible States for a <see cref="Cell"/> in the game.
     /// </summary>
@@ -53,6 +55,8 @@ namespace Conway.Library
         //  1, 1
         BottomRight
     }
+
+    #endregion
 
     /// <summary>
     /// Rules of life. All the magic is happening here!

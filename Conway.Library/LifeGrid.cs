@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Conway.Library
 {
@@ -69,16 +70,32 @@ namespace Conway.Library
         public void UpdateState()
         {
             // calculate results of life for each Cell of the LifeGrid (nextState)
-            for (int row = 0; row < GridHeight; row++)
-                for (int col = 0; col < GridWidth; col++)
+            // Makes use of multiple threads to go faster. (30%)
+            Parallel.For(0, GridHeight, row =>
+            {
+                for (int col = 0; col < GridWidth; col++) // Info: Nesting parallel.For is counter productive
                 {
                     var liveNeighbours = GetLiveNeighbours(row, col);
                     NextState[row, col] = LifeRules.GetNewState(CurrentState[row, col], liveNeighbours);
                 }
+            });
             // Updates CurrentState
             CurrentState = NextState;
             // Reset nextState
             NextState = new CellState[GridHeight, GridWidth];
+        }
+
+        /// <summary>
+        /// Adds random Alive cells on the LifeGrid.
+        /// </summary>
+        public void GenerateLife()
+        {
+            Random rand = new Random();
+            for (int row = 0; row < GridHeight; row++)
+                for (int col = 0; col < GridWidth; col++)
+                    CurrentState[row, col] = rand.Next(2) == 1
+                        ? CellState.Alive
+                        : CellState.Dead;
         }
 
         #endregion

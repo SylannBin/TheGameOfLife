@@ -1,9 +1,6 @@
 ﻿using Conway.Library;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace Conway.ConsoleUI
 {
@@ -51,9 +48,10 @@ namespace Conway.ConsoleUI
         static void InitGame()
         {
             // Generate the grid
-            MyGrid = new LifeGrid(60, 80);
+            MyGrid = new LifeGrid(45, 80);
 
             // Set the Alive cells (Cells are Dead by default)
+            //MyGrid.GenerateLife();
             InitGosperglidergun();
             //MyGrid.CurrentState[1, 2] = CellState.Alive;
             //MyGrid.CurrentState[2, 2] = CellState.Alive;
@@ -119,17 +117,17 @@ namespace Conway.ConsoleUI
             Console.Clear();
             int x = 0;
             int rowLength = MyGrid.GridWidth;
-            string output = "";
+            var output = new StringBuilder();
             foreach (var state in currentState)
             {
-                output += state == CellState.Alive ? "#" : " ";
-                if (++x >= rowLength)
+                output.Append(state == CellState.Alive ? "O" : " ");
+                if (++x == rowLength)
                 {
                     x = 0;
-                    output += '\n';
+                    output.AppendLine();
                 }
             }
-            Console.WriteLine(output);
+            Console.Write(output.ToString());
         }
 
         #endregion
